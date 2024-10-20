@@ -8,11 +8,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// Route::get('/animals', function() {
-//     echo 'Menampilkan data animals';
-// });
-
 Route::get('/animals', [AnimalsController::class, 'index']);
-Route::post('/animals', [AnimalsController::class, 'store']);
-Route::put('/animals/{id}', [AnimalsController::class, 'update']);
+Route::post('/animals/{nama_hewan}', [AnimalsController::class, 'store']);
+Route::put('/animals/{id}/{nama_hewan}', [AnimalsController::class, 'update']);
 Route::delete('/animals/{id}', [AnimalsController::class, 'delete']);

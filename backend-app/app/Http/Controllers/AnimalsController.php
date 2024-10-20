@@ -16,8 +16,8 @@ class AnimalsController extends Controller
         }
     }
 
-    public function store() {
-        $new_animal = "Musang";
+    public function store($nama_hewan) {
+        $new_animal = $nama_hewan;
         array_push($this->animals, $new_animal);
         echo "Menambah hewan $new_animal" . "<br>";
         echo ' Menampilkan data animals: ' . "<br>";
@@ -27,8 +27,8 @@ class AnimalsController extends Controller
         }
     }
 
-    public function update($id) {
-        $new_animal = 'Burung';
+    public function update($id, $nama_hewan) {
+        $new_animal = $nama_hewan;
         if (isset($this->animals[$id])) {
             $this->animals[$id] = $new_animal;
             echo "Mengupdate data hewan id $id" . '<br>';
