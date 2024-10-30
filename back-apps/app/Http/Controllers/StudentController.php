@@ -44,22 +44,22 @@ class StudentController extends Controller
             return response()->json([
                 'message' => "Id $id not found"
             ], 404);
-        }
-
-        $input = [
-            'nama' => $request->nama,
-            'nim' => $request->nim,
-            'email' => $request->email,
-            'jurusan' => $request->jurusan
-        ];
-
-        $student->update($input);
-
-        $data = [
-            'message' => "Data dengan Id $id berhasil diupdate",
-            'data' => $student
-        ];
-        return response()->json($data, 200);
+        } else if($student) {
+            $input = [
+                'nama' => $request->nama,
+                'nim' => $request->nim,
+                'email' => $request->email,
+                'jurusan' => $request->jurusan
+            ];
+    
+            $student->update($input);
+    
+            $data = [
+                'message' => "Data dengan Id $id berhasil diupdate",
+                'data' => $student
+            ];
+            return response()->json($data, 200);
+        } 
     }
     
     public function delete(Request $request, $id) {
@@ -69,14 +69,14 @@ class StudentController extends Controller
             return response()->json([
                 'message' => "Data dengan Id $id tidak ditemukan"
             ], 404);
+        } else if($student) {
+            $student->delete($student);
+
+            $data = [
+                'message' => "Data dengan Id $id telah dihapus",
+                'data' => $student
+            ];
+            return response()->json($data, 200);
         }
-
-        $student->delete($student);
-
-        $data = [
-            'message' => "Data dengan Id $id telah dihapus",
-            'data' => $student
-        ];
-        return response()->json($data, 200);
     }
 }
