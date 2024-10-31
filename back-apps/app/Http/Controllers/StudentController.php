@@ -4,62 +4,65 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+
 
 class StudentController extends Controller
 {
     public function index() {
-        // melihat data
-        $student = student::all(); //menggunakan eloquent
-
-        $data = [
-            'message' => 'Berhasil akses data',
-            'data' => $student
-        ];
-        return response()->json($data, 200); 
+        $students = Student::all(); 
+    
+        if ($students->isEmpty()) {
+            return response()->json([
+                'message' => 'Data tidak ada',
+                'data' => []
+            ], 404);
+        } else {
+            return response()->json([
+                'message' => 'Berhasil akses data',
+                'data' => $students
+            ], 200);
+        }
     }
-
+    
     public function store(Request $request) {
-        $input = [
-            'nama' => $request->nama,
-            'nim' => $request->nim,
-            'email' => $request->email,
-            'jurusan' => $request->jurusan
-        ];
-
-        $student = Student::create($input);
-
+        $validatedData = $request->validate([
+            'nama' => 'required|string|max:255',
+            'nim' => 'required|numeric|digits_between:1,10|unique:students,nim',
+            'email' => 'required|email|unique:students,email',
+            'jurusan' => 'required|string|max:100',
+        ]);
+    
+        $student = Student::create($validatedData);
+    
         $data = [
             'message' => 'Data berhasil ditambah',
             'data' => $student
         ];
         return response()->json($data, 201);
     }
-
+    
     public function update(Request $request, $id) {
-        
         $student = Student::find($id);
     
-        if(!$student) {
+        if (!$student) {
             return response()->json([
-                'message' => "Id $id not found"
+                'message' => "Id $id tidak ditemukan"
             ], 404);
-        } else if($student) {
-            $input = [
-                'nama' => $request->nama,
-                'nim' => $request->nim,
-                'email' => $request->email,
-                'jurusan' => $request->jurusan
-            ];
+        }
     
-            $student->update($input);
+        $validatedData = $request->validate([
+            'nama' => 'sometimes|required|string|max:255',
+            'nim' => 'sometimes|required|numeric|digits_between:1,10|unique:students,nim,' . $id,
+            'email' => 'sometimes|required|email|unique:students,email,' . $id,
+            'jurusan' => 'sometimes|required|string|max:100',
+        ]);
     
-            $data = [
-                'message' => "Data dengan Id $id berhasil diupdate",
-                'data' => $student
-            ];
-            return response()->json($data, 200);
-        } 
+        $student->update($validatedData);
+    
+        return response()->json([
+            'message' => "Data dengan Id $id berhasil diupdate",
+            'data' => $student
+        ], 200);
     }
     
     public function delete(Request $request, $id) {
@@ -77,6 +80,23 @@ class StudentController extends Controller
                 'data' => $student
             ];
             return response()->json($data, 200);
+        }
+    }
+
+    public function show(Request $request, $id) {
+        $student = Student::find($id);
+        if($student) {
+            $data = [
+                'message' => 'Get detail data',
+                'data' => $student
+            ];
+            return response()->json($data, 200);
+        } else{
+            $data = [
+                'message' => "Data dengan Id $id tidak ditemukan",
+                'data' => $student
+            ];
+            return response()->json($data, 404);
         }
     }
 }
