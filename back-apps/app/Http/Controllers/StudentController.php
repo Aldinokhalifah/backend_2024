@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 
 class StudentController extends Controller
@@ -24,22 +26,31 @@ class StudentController extends Controller
         }
     }
     
-    public function store(Request $request) {
-        $validatedData = $request->validate([
-            'nama' => 'required|string|max:255',
-            'nim' => 'required|numeric|digits_between:1,10|unique:students,nim',
-            'email' => 'required|email|unique:students,email',
-            'jurusan' => 'required|string|max:100',
+    public function store(Request $request){
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required',
+            'nim' => 'numeric|required',
+            'email' => 'email|required',
+            'jurusan' => 'required',
         ]);
-    
-        $student = Student::create($validatedData);
-    
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $student = Student::create($request->all());
+
         $data = [
-            'message' => 'Data berhasil ditambah',
-            'data' => $student
+            'message' => 'Student is created successfully',
+            'data' => $student,
         ];
+
         return response()->json($data, 201);
     }
+
     
     public function update(Request $request, $id) {
         $student = Student::find($id);
