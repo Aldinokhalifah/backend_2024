@@ -1,4 +1,4 @@
-const {index, store, update, destroy} = require('./controller/FruitController.js');
+import { index, store, update, destroy } from './controller/FruitController.js';
 
 const main = () => {
     console.log("Method index - Menampilkan Buah");
