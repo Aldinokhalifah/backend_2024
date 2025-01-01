@@ -23,6 +23,9 @@ class Student {
                 }
                 resolve(results.insertId);
             });
+
+            const student =  this.find(id);
+            return student;
         });
     
         // Melakukan query berdasarkan id
@@ -36,6 +39,45 @@ class Student {
             });
         });
     }
+
+    static find(id) {
+        return new Promise((resolve, reject) => {
+            db.query('SELECT * FROM students WHERE id = ?', id, (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    const[student] = result;
+                    resolve(student);
+                }
+            });
+        })
+    }
+
+    static async update(id, data) {
+        await new Promise((resolve, reject) => {
+            const sql = "UPDATE students SET ? WHERE id = ?";
+            db.query(sql, [id, data], (err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(results);
+            });
+        })
+    }
+
+    static delete(id) {
+        return new Promise((resolve, reject) => {
+            db.query('DELETE FROM students WHERE id = ?', id, (err, results) => {
+                if(err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    }
+
+
 }
 
 module.exports = Student;
