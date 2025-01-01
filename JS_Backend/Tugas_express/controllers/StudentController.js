@@ -1,8 +1,10 @@
 const { json } = require('express');
-const students = require('../data/students');
+const Students = require('../data/students');
+const Student = require('../models/Student');
 
 class StudentController {
-    index(req, res) {
+    async index(req, res) {
+        const students = await Student.all();
         const data = {
             'message' : 'menampilkan data student:',
             'data' : students
@@ -10,15 +12,13 @@ class StudentController {
         res.json(data);
     }
 
-    store(req, res) {
-        const {nama} = req.body;
-
-        students.push(nama);
+    async store(req, res) {
+        const students = await Student.create(req.body);
         const data = {
-            'message' : `Menambahkan student baru: ${nama}`,
-            'data' : students
+            'message': `Menambahkan student baru dengan nama: ${req.body.nama}`, 
+            'data': students
         }
-        res.json(data);
+        res.json(data); 
     }
 
     update(req, res) {
