@@ -23,7 +23,13 @@ class BooksController {
         const {title, author, year} = req.body;
         if (!title || !author || !year) {
             return res.status(400).json({
-            'message': 'All fields are required'
+                'message': 'All fields are required'
+            });
+        }
+
+        if (typeof title !== 'string' || typeof author !== 'string' || typeof year !== 'number') {
+            return res.status(400).json({
+                'message': 'Invalid data types'
             });
         }
 
@@ -32,12 +38,26 @@ class BooksController {
             'message': 'Data berhasil ditambahkan',
             'data': newBook
         };
-        res.status(201).json({response});
+        res.status(201).json(response);
     }
 
     // mengupdate data buku
     async update(req, res) {
         const {id} = req.params;
+        const {title, author, year} = req.body;
+
+        if (!title || !author || !year) {
+            return res.status(400).json({
+                'message': 'All fields are required'
+            });
+        }
+
+        if (typeof title !== 'string' || typeof author !== 'string' || typeof year !== 'number') {
+            return res.status(400).json({
+                'message': 'Invalid data types'
+            });
+        }
+
         const book = await Books.find(id);
 
         if(book) {
