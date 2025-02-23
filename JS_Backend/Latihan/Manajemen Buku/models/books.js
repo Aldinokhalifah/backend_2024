@@ -54,6 +54,20 @@ class Books {
         });
     }
 
+    // mencari buku berdasarkan nama
+    static findByTitle(title) {
+        return new Promise((resolve, reject) => {
+            const query = 'SELECT * FROM books WHERE title LIKE ?';
+            db.query(query, `%${title}%`, (err, result) => {
+                if(err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    }
+
     // mengupdate data buku
     static async update(id, data) {
         await new Promise((resolve, reject) => {

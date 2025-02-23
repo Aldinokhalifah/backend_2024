@@ -93,6 +93,23 @@ class BooksController {
         }
     }
 
+    async search(req, res) {
+        const {title} = req.params;
+        const book = await Books.findByTitle(title);
+
+        if(book) {
+            const response = {
+                message: `Menampilkan data buku dengan judul: ${title}`,
+                data: book
+            }
+            res.status(200).json(response);
+        } else {
+            res.status(404).json({
+                message: 'Data Buku Tidak Ditemukan'
+            });
+        }
+    }
+
     async destroy(req, res) {
         const {id} = req.params;
         const book = await Books.find(id);

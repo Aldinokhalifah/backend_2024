@@ -8,6 +8,7 @@ router.get('/', (req, res) => {
 
 router.get('/books', BooksController.index);
 router.get('/books/:id', BooksController.show);
+router.get('/books/search/:title', BooksController.search);
 router.post('/books', BooksController.store);
 router.put('/books/:id', BooksController.update);
 router.delete('/books/:id', BooksController.destroy);
